@@ -1,85 +1,80 @@
 #include <iostream>
+#include <locale.h>
+using namespace std;
+// Функция для определения, является ли число простым
+bool prostoeli(int number) {
+    if (number <= 1) {
+        return false;
+    }
+    for (int i = 2; i * i <= number; ++i) {
+        if (number % i == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Функция для удаления простых чисел из массива и возвращения нового массива
+int* ubratprost(int* arr, int& size) {
+    // Подсчитываем количество простых чисел в массиве
+    int prostcolichestvo = 0;
+    for (int i = 0; i < size; ++i) {
+        if (prostoeli(arr[i])) {
+            prostcolichestvo++;
+        }
+    }
+
+    // Создаем новый массив, который будет меньше на количество простых чисел
+    int newSize = size - prostcolichestvo;
+    int* newArr = new int[newSize];
+    int newIndex = 0;
+
+    // Копируем элементы из старого массива в новый, исключая простые числа
+    for (int i = 0; i < size; ++i) {
+        if (!prostoeli(arr[i])) {
+            newArr[newIndex++] = arr[i];
+        }
+    }
+
+    // Освобождаем память, занятую старым массивом
+    delete[] arr;
+
+    // Обновляем размер и возвращаем новый массив
+    size = newSize;
+    return newArr;
+}
 
 int main() {
-    int M, N;
-    std::cout << "Введите размер массива A: ";
-    std::cin >> M;
-    std::cout << "Введите размер массива B: ";
-    std::cin >> N;
+    setlocale(LC_ALL, "Russian");
 
-    // Создаем массивы A и B
-    int A[M], B[N];
+    int size;
+    cout << "Введите размер массива: ";
+    cin >> size;
 
-    std::cout << "Введите элементы массива A:" << std::endl;
-    for (int i = 0; i < M; i++) {
-        std::cin >> A[i];
+    if (size <= 0) {
+        cout << "Размер массива должен быть положительным числом." << endl;
+        return 1;
     }
 
-    std::cout << "Введите элементы массива B:" << std::endl;
-    for (int i = 0; i < N; i++) {
-        std::cin >> B[i];
+    int* arr = new int[size];
+
+    cout << "Введите элементы массива:" << endl;
+    for (int i = 0; i < size; ++i) {
+        cin >> arr[i];
     }
 
-    // Создаем массив C для хранения уникальных элементов
-    int C[M + N];
-    int sizeC = 0; // Текущий размер массива C
+    // Вызываем функцию для удаления простых чисел
+    arr = ubratprost(arr, size);
 
-    // Добавляем элементы из A, которые не встречаются в B
-    for (int i = 0; i < M; i++) {
-        bool isCommon = false; // Флаг, указывающий, что элемент общий для A и B
-        for (int j = 0; j < N; j++) {
-            if (A[i] == B[j]) {
-                isCommon = true;
-                break;
-            }
-        }
-        if (!isCommon) {
-            // Добавляем элемент в C, если он не общий
-            bool isDuplicate = false;
-            for (int k = 0; k < sizeC; k++) {
-                if (C[k] == A[i]) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-            if (!isDuplicate) {
-                C[sizeC] = A[i];
-                sizeC++;
-            }
-        }
+    // Выводим результат
+    cout << "Массив после удаления простых чисел: ";
+    for (int i = 0; i < size; ++i) {
+        cout << arr[i] << " ";
     }
+    cout << endl;
 
-    // Добавляем элементы из B, которые не встречаются в A
-    for (int i = 0; i < N; i++) {
-        bool isCommon = false; // Флаг, указывающий, что элемент общий для A и B
-        for (int j = 0; j < M; j++) {
-            if (B[i] == A[j]) {
-                isCommon = true;
-                break;
-            }
-        }
-        if (!isCommon) {
-            // Добавляем элемент в C, если он не общий
-            bool isDuplicate = false;
-            for (int k = 0; k < sizeC; k++) {
-                if (C[k] == B[i]) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-            if (!isDuplicate) {
-                C[sizeC] = B[i];
-                sizeC++;
-            }
-        }
-    }
-
-    // Выводим элементы массива C
-    std::cout << "Уникальные элементы массивов A и B:" << std::endl;
-    for (int i = 0; i < sizeC; i++) {
-        std::cout << C[i] << " ";
-    }
-    std::cout << std::endl;
+    // Освобождаем память, занятую новым массивом
+    delete[] arr;
 
     return 0;
 }
