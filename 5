@@ -1,0 +1,85 @@
+#include <iostream>
+
+int main() {
+    int M, N;
+    std::cout << "Введите размер массива A: ";
+    std::cin >> M;
+    std::cout << "Введите размер массива B: ";
+    std::cin >> N;
+
+    // Создаем массивы A и B
+    int A[M], B[N];
+
+    std::cout << "Введите элементы массива A:" << std::endl;
+    for (int i = 0; i < M; i++) {
+        std::cin >> A[i];
+    }
+
+    std::cout << "Введите элементы массива B:" << std::endl;
+    for (int i = 0; i < N; i++) {
+        std::cin >> B[i];
+    }
+
+    // Создаем массив C для хранения уникальных элементов
+    int C[M + N];
+    int sizeC = 0; // Текущий размер массива C
+
+    // Добавляем элементы из A, которые не встречаются в B
+    for (int i = 0; i < M; i++) {
+        bool isCommon = false; // Флаг, указывающий, что элемент общий для A и B
+        for (int j = 0; j < N; j++) {
+            if (A[i] == B[j]) {
+                isCommon = true;
+                break;
+            }
+        }
+        if (!isCommon) {
+            // Добавляем элемент в C, если он не общий
+            bool isDuplicate = false;
+            for (int k = 0; k < sizeC; k++) {
+                if (C[k] == A[i]) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            if (!isDuplicate) {
+                C[sizeC] = A[i];
+                sizeC++;
+            }
+        }
+    }
+
+    // Добавляем элементы из B, которые не встречаются в A
+    for (int i = 0; i < N; i++) {
+        bool isCommon = false; // Флаг, указывающий, что элемент общий для A и B
+        for (int j = 0; j < M; j++) {
+            if (B[i] == A[j]) {
+                isCommon = true;
+                break;
+            }
+        }
+        if (!isCommon) {
+            // Добавляем элемент в C, если он не общий
+            bool isDuplicate = false;
+            for (int k = 0; k < sizeC; k++) {
+                if (C[k] == B[i]) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            if (!isDuplicate) {
+                C[sizeC] = B[i];
+                sizeC++;
+            }
+        }
+    }
+
+    // Выводим элементы массива C
+    std::cout << "Уникальные элементы массивов A и B:" << std::endl;
+    for (int i = 0; i < sizeC; i++) {
+        std::cout << C[i] << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
